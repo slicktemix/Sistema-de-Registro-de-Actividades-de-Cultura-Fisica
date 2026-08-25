@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Sistema Cultura Física</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<style>
+
+body{
+    background: linear-gradient(135deg,#0f172a,#1e293b);
+    min-height:100vh;
+    padding:30px;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+.welcome{
+    text-align:center;
+    color:white;
+    margin-bottom:30px;
+}
+
+.welcome h1{
+    font-size:42px;
+    font-weight:bold;
+}
+
+.container-form{
+    background:white;
+    border-radius:20px;
+    padding:40px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
+
+.section-title{
+    background:#0f172a;
+    color:white;
+    padding:12px;
+    border-radius:10px;
+    margin-top:25px;
+    margin-bottom:20px;
+    font-weight:bold;
+}
+
+.form-control{
+    border-radius:10px;
+}
+
+.event-options{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:15px;
+}
+
+.event-card{
+    border:2px solid #cbd5e1;
+    border-radius:12px;
+    padding:15px;
+    cursor:pointer;
+    transition:0.3s;
+    font-weight:bold;
+    text-align:center;
+    user-select:none;
+}
+
+.event-card:hover{
+    background:#f1f5f9;
+}
+
+.event-card.active{
+    background:#16a34a;
+    color:white;
+    border-color:#16a34a;
+}
+
+.table{
+    text-align:center;
+}
+
+.table input{
+    text-align:center;
+}
+
+.btn-generate{
+    background:#16a34a;
+    border:none;
+    padding:15px 35px;
+    color:white;
+    font-size:18px;
+    font-weight:bold;
+    border-radius:12px;
+    transition:0.3s;
+}
+
+.btn-generate:hover{
+    background:#15803d;
+    transform:scale(1.03);
+}
+
+.signature-box{
+    margin-top:80px;
+    text-align:center;
+}
+
+.signature-line{
+    border-top:1px solid black;
+    width:220px;
+    margin:auto;
+    margin-bottom:10px;
+}
+
+.pdf-template{
+    width:100%;
+    background:white;
+    color:black;
+    padding:40px;
+    font-size:14px;
+}
+
+.pdf-header{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.pdf-header h3{
+    font-weight:bold;
+}
+
+.pdf-table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+
+.pdf-table td,
+.pdf-table th{
+    border:1px solid black;
+    padding:8px;
+}
+
+.pdf-signatures{
+    margin-top:80px;
+    display:flex;
+    justify-content:space-between;
+    text-align:center;
+}
+
+.pdf-signature{
+    width:30%;
+}
+
+.pdf-signature hr{
+    border:1px solid black;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="welcome">
+        <h1>Sistema de Registro de Cultura Física</h1>
+        <p>Universidad Autónoma del Estado de México</p>
+    </div>
+
+    <div class="container-form">
+
+        <div class="text-center mb-4">
+            <h2>REGISTRO DE ACTIVIDADES DE CULTURA FÍSICA</h2>
+        </div>
+
+        <div class="section-title">
+            Información General
+        </div>
+
+        <div class="row g-3">
+
+            <div class="col-md-6">
+                <label>Fecha de elaboración</label>
+                <input type="date" class="form-control" id="fecha">
+            </div>
+
+            <div class="col-md-6">
+                <label>Espacio Académico</label>
+                <input type="text" class="form-control" id="espacio">
+            </div>
+
+            <div class="col-md-6">
+                <label>Nombre del evento</label>
+                <input type="text" class="form-control" id="evento">
+            </div>
+
+            <div class="col-md-6">
+                <label>Nombre del organizador</label>
+                <input type="text" class="form-control" id="organizador">
+            </div>
+
+            <div class="col-md-6">
+                <label>Lugar del evento</label>
+                <input type="text" class="form-control" id="lugar">
+            </div>
+
+            <div class="col-md-6">
+                <label>Duración</label>
+                <input type="text" class="form-control" id="duracion">
+            </div>
+
+            <div class="col-md-6">
+                <label>Hora de inicio</label>
+                <input type="time" class="form-control" id="inicio">
+            </div>
+
+            <div class="col-md-6">
+                <label>Hora de término</label>
+                <input type="time" class="form-control" id="termino">
+            </div>
+
+        </div>
+
+        <div class="section-title">
+            Tipo de Evento
+        </div>
+
+        <div class="event-options">
+
+            <div class="event-card" onclick="toggleEvent(this)">Torneo</div>
+            <div class="event-card" onclick="toggleEvent(this)">Ligas</div>
+            <div class="event-card" onclick="toggleEvent(this)">Taller</div>
+            <div class="event-card" onclick="toggleEvent(this)">Exhibición</div>
+            <div class="event-card" onclick="toggleEvent(this)">Activación Física</div>
+            <div class="event-card" onclick="toggleEvent(this)">Académico</div>
+            <div class="event-card" onclick="toggleEvent(this)">Carrera/Rodada/Caminata</div>
+            <div class="event-card" onclick="toggleEvent(this)">Juegos</div>
+            <div class="event-card" onclick="toggleEvent(this)">Otro</div>
+
+        </div>
+
+        <div class="section-title">
+            Participantes
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered">
+
+                <thead class="table-dark">
+                    <tr>
+                        <th>Categoría</th>
+                        <th>Mujeres</th>
+                        <th>Hombres</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>Estudiantes</td>
+                        <td><input type="number" class="form-control women"></td>
+                        <td><input type="number" class="form-control men"></td>
+                        <td><input type="number" class="form-control total" readonly></td>
+                    </tr>
+
+                    <tr>
+                        <td>Administrativos</td>
+                        <td><input type="number" class="form-control women"></td>
+                        <td><input type="number" class="form-control men"></td>
+                        <td><input type="number" class="form-control total" readonly></td>
+                    </tr>
+
+                    <tr>
+                        <td>Docentes</td>
+                        <td><input type="number" class="form-control women"></td>
+                        <td><input type="number" class="form-control men"></td>
+                        <td><input type="number" class="form-control total" readonly></td>
+                    </tr>
+
+                    <tr>
+                        <td>Egresados</td>
+                        <td><input type="number" class="form-control women"></td>
+                        <td><input type="number" class="form-control men"></td>
+                        <td><input type="number" class="form-control total" readonly></td>
+                    </tr>
+
+                    <tr>
+                        <td>Público</td>
+                        <td><input type="number" class="form-control women"></td>
+                        <td><input type="number" class="form-control men"></td>
+                        <td><input type="number" class="form-control total" readonly></td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div class="section-title">
+            Comentarios del Evento
+        </div>
+
+        <textarea class="form-control" rows="5" id="comentarios"></textarea>
+
+        <div class="row">
+
+            <div class="col-md-4 signature-box">
+                <div class="signature-line"></div>
+                <strong>Responsable</strong><br>
+                Nombre y firma
+            </div>
+
+            <div class="col-md-4 signature-box">
+                <div class="signature-line"></div>
+                <strong>Organizador</strong><br>
+                Nombre y firma
+            </div>
+
+            <div class="col-md-4 signature-box">
+                <div class="signature-line"></div>
+                <strong>Vo.Bo.</strong><br>
+                Nombre y firma
+            </div>
+
+        </div>
+
+        <div class="text-center mt-5">
+
+            <button class="btn-generate" onclick="generatePDF()">
+                Generar PDF
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+function toggleEvent(element){
+    element.classList.toggle('active');
+}
+
+const womenInputs = document.querySelectorAll('.women');
+const menInputs = document.querySelectorAll('.men');
+
+function calculateTotals(){
+
+    const rows = document.querySelectorAll('tbody tr');
+
+    rows.forEach(row=>{
+
+        const women = parseInt(row.querySelector('.women').value) || 0;
+        const men = parseInt(row.querySelector('.men').value) || 0;
+
+        row.querySelector('.total').value = women + men;
+
+    });
+
+}
+
+womenInputs.forEach(input=>{
+    input.addEventListener('input',calculateTotals);
+});
+
+menInputs.forEach(input=>{
+    input.addEventListener('input',calculateTotals);
+});
+
+function generatePDF(){
+
+    const selectedEvents = [];
+
+    document.querySelectorAll('.event-card.active').forEach(card=>{
+        selectedEvents.push(card.innerText);
+    });
+
+    const rows = document.querySelectorAll('tbody tr');
+
+    let participantRows = '';
+
+    rows.forEach(row=>{
+
+        const categoria = row.cells[0].innerText;
+        const women = row.querySelector('.women').value || 0;
+        const men = row.querySelector('.men').value || 0;
+        const total = row.querySelector('.total').value || 0;
+
+        participantRows += `
+            <tr>
+                <td>${categoria}</td>
+                <td>${women}</td>
+                <td>${men}</td>
+                <td>${total}</td>
+            </tr>
+        `;
+
+    });
+
+    const pdfContent = `
+    
+    <div class="pdf-template">
+
+        <div class="pdf-header">
+
+            <h4>Universidad Autónoma del Estado de México</h4>
+            <h3>REGISTRO DE ACTIVIDADES DE CULTURA FÍSICA</h3>
+
+        </div>
+
+        <table class="pdf-table">
+
+            <tr>
+                <th>Fecha</th>
+                <td>${document.getElementById('fecha').value}</td>
+            </tr>
+
+            <tr>
+                <th>Espacio Académico</th>
+                <td>${document.getElementById('espacio').value}</td>
+            </tr>
+
+            <tr>
+                <th>Nombre del evento</th>
+                <td>${document.getElementById('evento').value}</td>
+            </tr>
+
+            <tr>
+                <th>Organizador</th>
+                <td>${document.getElementById('organizador').value}</td>
+            </tr>
+
+            <tr>
+                <th>Lugar del evento</th>
+                <td>${document.getElementById('lugar').value}</td>
+            </tr>
+
+            <tr>
+                <th>Duración</th>
+                <td>${document.getElementById('duracion').value}</td>
+            </tr>
+
+            <tr>
+                <th>Hora inicio</th>
+                <td>${document.getElementById('inicio').value}</td>
+            </tr>
+
+            <tr>
+                <th>Hora término</th>
+                <td>${document.getElementById('termino').value}</td>
+            </tr>
+
+            <tr>
+                <th>Tipo de evento</th>
+                <td>${selectedEvents.join(', ')}</td>
+            </tr>
+
+        </table>
+
+        <h4 style="margin-top:25px;">Participantes</h4>
+
+        <table class="pdf-table">
+
+            <thead>
+                <tr>
+                    <th>Categoría</th>
+                    <th>Mujeres</th>
+                    <th>Hombres</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                ${participantRows}
+
+            </tbody>
+
+        </table>
+
+        <h4 style="margin-top:25px;">Comentarios del Evento</h4>
+
+        <div style="border:1px solid black;padding:15px;min-height:120px;">
+            ${document.getElementById('comentarios').value}
+        </div>
+
+        <div class="pdf-signatures">
+
+            <div class="pdf-signature">
+                <hr>
+                Responsable<br>
+                Nombre y firma
+            </div>
+
+            <div class="pdf-signature">
+                <hr>
+                Organizador<br>
+                Nombre y firma
+            </div>
+
+            <div class="pdf-signature">
+                <hr>
+                Vo.Bo.<br>
+                Nombre y firma
+            </div>
+
+        </div>
+
+    </div>
+
+    `;
+
+    const tempDiv = document.createElement('div');
+
+    tempDiv.innerHTML = pdfContent;
+
+    document.body.appendChild(tempDiv);
+
+    html2pdf()
+    .set({
+        margin:0.3,
+        filename:'registro_cultura_fisica.pdf',
+        image:{ type:'jpeg', quality:1 },
+        html2canvas:{ scale:3 },
+        jsPDF:{
+            unit:'in',
+            format:'letter',
+            orientation:'portrait'
+        }
+    })
+    .from(tempDiv)
+    .save()
+    .then(()=>{
+        document.body.removeChild(tempDiv);
+    });
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema Cultura Física - UAEMex</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+    :root{
+        --uaem-green:#526855;
+        --uaem-gold:#cb9e52;
+        --dark:#26362a;
+        --soft:#f7f3ea;
+        --line:#d9c7a4;
+    }
+
+    body{
+        background:
+            radial-gradient(circle at top left, rgba(203,158,82,0.28), transparent 32%),
+            linear-gradient(135deg,#526855,#26362a);
+        min-height:100vh;
+        font-family:Arial, Helvetica, sans-serif;
+    }
+
+    .navbar{ background:var(--uaem-green) !important; border-bottom:4px solid var(--uaem-gold); }
+    .navbar-brand{font-weight:700; display:flex; align-items:center; gap:10px;}
+    .nav-link { color: white !important; }
+    .nav-link.active { background-color: var(--uaem-gold) !important; color: #1f2d22 !important; border-radius:10px; font-weight:700; }
+
+    .welcome{
+        text-align:center;
+        color:white;
+        padding: 70px 20px;
+    }
+
+    .brand-logo{
+        width:54px;
+        height:54px;
+        object-fit:contain;
+        background:white;
+        padding:6px;
+        border-radius:12px;
+    }
+
+    .welcome-logo{
+        width:150px;
+        max-width:42vw;
+        background:white;
+        border-radius:24px;
+        padding:18px;
+        margin-bottom:22px;
+        box-shadow:0 10px 25px rgba(0,0,0,0.28);
+    }
+
+    .gold-divider{
+        width:110px;
+        height:5px;
+        background:var(--uaem-gold);
+        border-radius:999px;
+        margin:16px auto 22px;
+    }
+
+    .welcome h1{
+        font-size:46px;
+        font-weight:bold;
+    }
+
+    .container-form{
+        background:white;
+        border-radius:22px;
+        padding:38px;
+        box-shadow:0 10px 30px rgba(0,0,0,0.35);
+        max-width: 1120px;
+        margin: 30px auto;
+        border-top:8px solid var(--uaem-gold);
+    }
+
+    .section-title{
+        background:linear-gradient(90deg,var(--uaem-green),#384a3d);
+        color:white;
+        padding:12px 20px;
+        border-radius:12px;
+        margin:26px 0 18px;
+        font-weight:bold;
+        border-left:8px solid var(--uaem-gold);
+    }
+
+    label{font-weight:600; margin-bottom:6px; color:#334155;}
+    .form-control, .form-select{ border-radius:10px; border-color:#d9c7a4; }
+    .form-control:focus{ border-color:var(--uaem-gold); box-shadow:0 0 0 .2rem rgba(203,158,82,.25); }
+
+    .event-options{
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+        gap:14px;
+    }
+
+    .event-card{
+        border:2px solid var(--line);
+        border-radius:14px;
+        padding:15px;
+        cursor:pointer;
+        transition:0.2s;
+        font-weight:bold;
+        text-align:center;
+        background:#fff;
+        user-select:none;
+    }
+
+    .event-card:hover{ background:#f7f3ea; border-color:var(--uaem-gold); }
+    .event-card.active{
+        background:var(--uaem-green);
+        color:white;
+        border-color:var(--uaem-gold);
+        box-shadow:0 0 0 3px rgba(203,158,82,.22);
+    }
+
+    .summary-box{
+        background:#f7f3ea;
+        border:1px solid #d9c7a4;
+        border-radius:14px;
+        padding:16px;
+        margin-top:16px;
+    }
+
+    .btn-generate{
+        background:linear-gradient(135deg,var(--uaem-green),#384a3d);
+        border:2px solid var(--uaem-gold);
+        padding:15px 35px;
+        color:white;
+        font-size:18px;
+        font-weight:bold;
+        border-radius:12px;
+    }
+
+    .btn-success{
+        background:var(--uaem-gold) !important;
+        border-color:var(--uaem-gold) !important;
+        color:#1f2d22 !important;
+        font-weight:700;
+    }
+
+    .form-header{
+        display:flex;
+        gap:18px;
+        align-items:center;
+        justify-content:center;
+        text-align:left;
+        margin-bottom:12px;
+    }
+
+    .form-logo{
+        width:86px;
+        height:86px;
+        object-fit:contain;
+    }
+
+    .table-dark th{
+        background:var(--uaem-green) !important;
+        border-color:var(--uaem-green) !important;
+        color:white !important;
+    }
+
+    @media(max-width:640px){
+        .form-header{ text-align:center; flex-direction:column; }
+        .welcome h1{ font-size:34px; }
+    }
+
+    .btn-generate:disabled{
+        background:#94a3b8;
+        cursor:not-allowed;
+    }
+
+    .help-text{font-size:13px; color:#64748b; margin-top:8px;}
+    .alert-small{font-size:14px;}
+</style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="#"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Logo_de_la_UAEMex.svg/1920px-Logo_de_la_UAEMex.svg.png" class="brand-logo" alt="Logo UAEMex"> UAEMex - Cultura Física</a>
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link active" href="#" id="navInicio" onclick="showSection('welcome')">Inicio</a>
+            <a class="nav-link" href="#" id="navForm" onclick="showSection('form')">Nuevo Registro</a>
+        </div>
+    </div>
+</nav>
+
+<div id="welcome-section" class="welcome">
+    <div class="container">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Logo_de_la_UAEMex.svg/1920px-Logo_de_la_UAEMex.svg.png" class="welcome-logo" alt="Logo UAEMex">
+        <h1>Bienvenido al Sistema de Registro</h1>
+        <div class="gold-divider"></div>
+        <p class="lead fs-3">Dirección de Cultura Física</p>
+        <p class="fs-4">Universidad Autónoma del Estado de México</p>
+        <button class="btn btn-success btn-lg px-5 py-3 mt-4" onclick="showSection('form')">
+            Iniciar Nuevo Registro
+        </button>
+    </div>
+</div>
+
+<div id="form-section" class="container-form d-none">
+    <div class="form-header">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Logo_de_la_UAEMex.svg/1920px-Logo_de_la_UAEMex.svg.png" class="form-logo" alt="Logo UAEMex">
+        <div>
+            <h2 class="fw-bold mb-1">REGISTRO DE ACTIVIDADES DE CULTURA FÍSICA</h2>
+            <p class="text-muted mb-0">Llena la información del evento para generar el PDF oficial.</p>
+        </div>
+    </div>
+
+    <div id="formAlert" class="alert alert-warning d-none alert-small"></div>
+
+    <div class="section-title">Información General</div>
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label>Fecha de elaboración *</label>
+            <input type="date" class="form-control required-field" id="fecha">
+        </div>
+        <div class="col-md-6">
+            <label>Espacio Académico / Universitario *</label>
+            <input type="text" class="form-control required-field" id="espacio" placeholder="Ej. Centro Universitario UAEM Ecatepec">
+        </div>
+        <div class="col-md-6">
+            <label>Nombre del evento *</label>
+            <input type="text" class="form-control required-field" id="evento" placeholder="Ej. Torneo interno de fútbol">
+        </div>
+        <div class="col-md-6">
+            <label>Nombre del organizador *</label>
+            <input type="text" class="form-control required-field" id="organizador" placeholder="Nombre completo del responsable">
+        </div>
+        <div class="col-md-6">
+            <label>Lugar del evento *</label>
+            <input type="text" class="form-control required-field" id="lugar" placeholder="Ej. Cancha principal">
+        </div>
+        <div class="col-md-6">
+            <label>Duración del evento *</label>
+            <input type="text" class="form-control required-field" id="duracion" placeholder="Ej. 2 horas">
+        </div>
+        <div class="col-md-6">
+            <label>Hora de inicio *</label>
+            <input type="time" class="form-control required-field" id="inicio">
+        </div>
+        <div class="col-md-6">
+            <label>Hora de término *</label>
+            <input type="time" class="form-control required-field" id="termino">
+        </div>
+    </div>
+
+    <div class="section-title">Tipo de Evento *</div>
+    <div class="event-options" id="eventOptions">
+        <div class="event-card" onclick="toggleEvent(this)">Torneo</div>
+        <div class="event-card" onclick="toggleEvent(this)">Ligas</div>
+        <div class="event-card" onclick="toggleEvent(this)">Taller</div>
+        <div class="event-card" onclick="toggleEvent(this)">Exhibición</div>
+        <div class="event-card" onclick="toggleEvent(this)">Activación Física</div>
+        <div class="event-card" onclick="toggleEvent(this)">Académico</div>
+        <div class="event-card" onclick="toggleEvent(this)">Carrera/Rodada/Caminata</div>
+        <div class="event-card" onclick="toggleEvent(this)">Juegos</div>
+        <div class="event-card" onclick="toggleEvent(this)">Otro</div>
+    </div>
+    <div class="help-text">Puedes seleccionar uno o varios tipos de evento.</div>
+
+    <div class="section-title">Participantes</div>
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle" id="participantsTable">
+            <thead class="table-dark">
+                <tr>
+                    <th>Categoría</th>
+                    <th>Mujeres</th>
+                    <th>Hombres</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Estudiantes</td><td><input type="number" min="0" class="form-control women" value="0"></td><td><input type="number" min="0" class="form-control men" value="0"></td><td><input type="number" class="form-control total" value="0" readonly></td></tr>
+                <tr><td>Administrativos</td><td><input type="number" min="0" class="form-control women" value="0"></td><td><input type="number" min="0" class="form-control men" value="0"></td><td><input type="number" class="form-control total" value="0" readonly></td></tr>
+                <tr><td>Docentes</td><td><input type="number" min="0" class="form-control women" value="0"></td><td><input type="number" min="0" class="form-control men" value="0"></td><td><input type="number" class="form-control total" value="0" readonly></td></tr>
+                <tr><td>Egresados</td><td><input type="number" min="0" class="form-control women" value="0"></td><td><input type="number" min="0" class="form-control men" value="0"></td><td><input type="number" class="form-control total" value="0" readonly></td></tr>
+                <tr><td>Público en General</td><td><input type="number" min="0" class="form-control women" value="0"></td><td><input type="number" min="0" class="form-control men" value="0"></td><td><input type="number" class="form-control total" value="0" readonly></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="summary-box row text-center">
+        <div class="col-md-4"><strong>Total mujeres:</strong> <span id="totalWomen">0</span></div>
+        <div class="col-md-4"><strong>Total hombres:</strong> <span id="totalMen">0</span></div>
+        <div class="col-md-4"><strong>Total general:</strong> <span id="grandTotal">0</span></div>
+    </div>
+
+    <div class="section-title">Comentarios del Evento</div>
+    <textarea class="form-control" rows="4" id="comentarios" placeholder="Escribe observaciones, incidencias o resultados del evento."></textarea>
+
+    <div class="text-center mt-5">
+        <button class="btn-generate" id="generateBtn" onclick="generatePDF()" disabled>
+            Generar PDF Oficial
+        </button>
+        <div class="help-text" id="buttonHelp">Completa los campos obligatorios para activar el botón.</div>
+    </div>
+</div>
+
+<script>
+function safeText(value){
+    return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+        .replace(/\n/g, '<br>');
+}
+
+function getValue(id){
+    const el = document.getElementById(id);
+    return el ? el.value.trim() : '';
+}
+
+function formatDate(dateValue){
+    if(!dateValue) return '';
+    const parts = dateValue.split('-');
+    if(parts.length !== 3) return dateValue;
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+}
+
+function toggleEvent(element){
+    element.classList.toggle('active');
+    validateForm();
+}
+
+function calculateTotals(){
+    let totalWomen = 0;
+    let totalMen = 0;
+    let grandTotal = 0;
+
+    document.querySelectorAll('#participantsTable tbody tr').forEach(row => {
+        const womenInput = row.querySelector('.women');
+        const menInput = row.querySelector('.men');
+        const totalInput = row.querySelector('.total');
+
+        const women = Math.max(parseInt(womenInput.value) || 0, 0);
+        const men = Math.max(parseInt(menInput.value) || 0, 0);
+        const total = women + men;
+
+        womenInput.value = women;
+        menInput.value = men;
+        totalInput.value = total;
+
+        totalWomen += women;
+        totalMen += men;
+        grandTotal += total;
+    });
+
+    document.getElementById('totalWomen').innerText = totalWomen;
+    document.getElementById('totalMen').innerText = totalMen;
+    document.getElementById('grandTotal').innerText = grandTotal;
+    validateForm();
+}
+
+function getSelectedEvents(){
+    return Array.from(document.querySelectorAll('.event-card.active')).map(el => el.innerText.trim());
+}
+
+function getParticipantsData(){
+    const rows = [];
+    document.querySelectorAll('#participantsTable tbody tr').forEach(row => {
+        const categoria = row.cells[0].innerText.trim();
+        const mujeres = parseInt(row.querySelector('.women').value) || 0;
+        const hombres = parseInt(row.querySelector('.men').value) || 0;
+        const total = mujeres + hombres;
+        rows.push({ categoria, mujeres, hombres, total });
+    });
+    return rows;
+}
+
+function getGrandTotal(){
+    return getParticipantsData().reduce((sum, item) => sum + item.total, 0);
+}
+
+function validateForm(showMessage = false){
+    const requiredIds = ['fecha','espacio','evento','organizador','lugar','duracion','inicio','termino'];
+    const missing = requiredIds.filter(id => getValue(id) === '');
+    const selectedEvents = getSelectedEvents();
+    const grandTotal = getGrandTotal();
+    const inicio = getValue('inicio');
+    const termino = getValue('termino');
+
+    let errors = [];
+    if(missing.length > 0) errors.push('Faltan campos obligatorios de Información General.');
+    if(selectedEvents.length === 0) errors.push('Selecciona al menos un tipo de evento.');
+    if(grandTotal <= 0) errors.push('Registra al menos un participante.');
+    if(inicio && termino && termino <= inicio) errors.push('La hora de término debe ser mayor que la hora de inicio.');
+
+    const btn = document.getElementById('generateBtn');
+    const help = document.getElementById('buttonHelp');
+    const alert = document.getElementById('formAlert');
+
+    btn.disabled = errors.length > 0;
+    help.innerText = errors.length > 0 ? 'Completa los campos obligatorios para activar el botón.' : 'Listo. Ya puedes generar el PDF oficial.';
+
+    if(showMessage && errors.length > 0){
+        alert.innerHTML = '<strong>Revisa el registro:</strong><br>' + errors.join('<br>');
+        alert.classList.remove('d-none');
+        window.scrollTo({ top: document.getElementById('form-section').offsetTop - 80, behavior: 'smooth' });
+    }else if(errors.length === 0){
+        alert.classList.add('d-none');
+    }
+
+    return errors.length === 0;
+}
+
+function buildPdfHTML(){
+    const participants = getParticipantsData();
+    const totalWomen = participants.reduce((s, r) => s + r.mujeres, 0);
+    const totalMen = participants.reduce((s, r) => s + r.hombres, 0);
+    const grandTotal = participants.reduce((s, r) => s + r.total, 0);
+    const selectedEvents = getSelectedEvents();
+
+    const participantRows = participants.map(r => `
+        <tr>
+            <td>${safeText(r.categoria)}</td>
+            <td style="text-align:center;">${r.mujeres}</td>
+            <td style="text-align:center;">${r.hombres}</td>
+            <td style="text-align:center; font-weight:bold;">${r.total}</td>
+        </tr>
+    `).join('');
+
+    return `
+    <div id="pdfSheet" style="width:760px; min-height:980px; background:#fff; color:#000; font-family:Arial, Helvetica, sans-serif; padding:28px; box-sizing:border-box; border-top:12px solid #526855;">
+        <div style="display:flex; align-items:center; gap:16px; border-bottom:4px solid #cb9e52; padding-bottom:12px; margin-bottom:16px;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Logo_de_la_UAEMex.svg/1920px-Logo_de_la_UAEMex.svg.png" crossorigin="anonymous" style="width:78px; height:78px; object-fit:contain;">
+            <div style="flex:1; text-align:left;">
+                <div style="font-size:18px; font-weight:bold; color:#526855;">Universidad Autónoma del Estado de México</div>
+                <div style="font-size:13px; margin-top:4px; color:#333;">Dirección de Cultura Física</div>
+                <div style="font-size:16px; font-weight:bold; margin-top:10px; color:#000;">REGISTRO DE ACTIVIDADES DE CULTURA FÍSICA</div>
+            </div>
+        </div>
+
+        <div style="background:#526855; color:white; border:1px solid #526855; border-left:8px solid #cb9e52; padding:7px 10px; font-weight:bold; font-size:12px;">Información General</div>
+        <table style="width:100%; border-collapse:collapse; font-size:11.5px; margin-bottom:14px;" border="1">
+            <tr>
+                <th style="background:#f7f3ea; width:32%; text-align:left; padding:7px;">Fecha de elaboración</th>
+                <td style="padding:7px;">${safeText(formatDate(getValue('fecha')))}</td>
+            </tr>
+            <tr>
+                <th style="background:#f7f3ea; text-align:left; padding:7px;">Espacio Académico / Universitario</th>
+                <td style="padding:7px;">${safeText(getValue('espacio'))}</td>
+            </tr>
+            <tr>
+                <th style="background:#f7f3ea; text-align:left; padding:7px;">Nombre del evento</th>
+                <td style="padding:7px;">${safeText(getValue('evento'))}</td>
+            </tr>
+            <tr>
+                <th style="background:#f7f3ea; text-align:left; padding:7px;">Nombre del organizador</th>
+                <td style="padding:7px;">${safeText(getValue('organizador'))}</td>
+            </tr>
+            <tr>
+                <th style="background:#f7f3ea; text-align:left; padding:7px;">Lugar del evento</th>
+                <td style="padding:7px;">${safeText(getValue('lugar'))}</td>
+            </tr>
+        </table>
+
+        <table style="width:100%; border-collapse:collapse; font-size:11.5px; margin-bottom:14px;" border="1">
+            <tr>
+                <th style="background:#f7f3ea; padding:7px; text-align:left; width:25%;">Duración</th>
+                <td style="padding:7px; width:25%;">${safeText(getValue('duracion'))}</td>
+                <th style="background:#f7f3ea; padding:7px; text-align:left; width:25%;">Hora de inicio</th>
+                <td style="padding:7px; width:25%;">${safeText(getValue('inicio'))}</td>
+            </tr>
+            <tr>
+                <th style="background:#f7f3ea; padding:7px; text-align:left;">Hora de término</th>
+                <td style="padding:7px;">${safeText(getValue('termino'))}</td>
+                <th style="background:#f7f3ea; padding:7px; text-align:left;">Tipo de evento</th>
+                <td style="padding:7px;">${safeText(selectedEvents.join(', '))}</td>
+            </tr>
+        </table>
+
+        <div style="background:#526855; color:white; border:1px solid #526855; border-left:8px solid #cb9e52; padding:7px 10px; font-weight:bold; font-size:12px;">Participantes</div>
+        <table style="width:100%; border-collapse:collapse; font-size:11.5px; margin-bottom:12px;" border="1">
+            <thead>
+                <tr style="background:#526855; color:white;">
+                    <th style="padding:7px; text-align:left;">Categoría</th>
+                    <th style="padding:7px;">Mujeres</th>
+                    <th style="padding:7px;">Hombres</th>
+                    <th style="padding:7px;">Total</th>
+                </tr>
+            </thead>
+            <tbody>${participantRows}</tbody>
+            <tfoot>
+                <tr style="background:#f7f3ea; font-weight:bold;">
+                    <td style="padding:7px;">Total general</td>
+                    <td style="padding:7px; text-align:center;">${totalWomen}</td>
+                    <td style="padding:7px; text-align:center;">${totalMen}</td>
+                    <td style="padding:7px; text-align:center;">${grandTotal}</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div style="background:#526855; color:white; border:1px solid #526855; border-left:8px solid #cb9e52; padding:7px 10px; font-weight:bold; font-size:12px;">Comentarios del Evento</div>
+        <div style="border:1px solid #000; border-top:0; min-height:95px; padding:10px; font-size:11.5px; margin-bottom:60px;">
+            ${safeText(getValue('comentarios') || 'Sin comentarios')}
+        </div>
+
+        <table style="width:100%; border-collapse:collapse; font-size:11px; text-align:center; margin-top:20px;">
+            <tr>
+                <td style="width:33%; padding:0 12px;"><div style="border-top:1px solid #000; padding-top:6px;"><strong>Responsable</strong><br>Nombre y firma</div></td>
+                <td style="width:33%; padding:0 12px;"><div style="border-top:1px solid #000; padding-top:6px;"><strong>Organizador</strong><br>Nombre y firma</div></td>
+                <td style="width:33%; padding:0 12px;"><div style="border-top:1px solid #000; padding-top:6px;"><strong>Vo.Bo.</strong><br>Jefatura de Departamento</div></td>
+            </tr>
+        </table>
+    </div>`;
+}
+
+function generatePDF(){
+    calculateTotals();
+    if(!validateForm(true)) return;
+
+    const pdfWrapper = document.createElement('div');
+    pdfWrapper.innerHTML = buildPdfHTML();
+    pdfWrapper.style.position = 'fixed';
+    pdfWrapper.style.left = '0';
+    pdfWrapper.style.top = '0';
+    pdfWrapper.style.width = '800px';
+    pdfWrapper.style.background = '#ffffff';
+    pdfWrapper.style.zIndex = '99999';
+    pdfWrapper.style.pointerEvents = 'none';
+    document.body.appendChild(pdfWrapper);
+
+    const eventName = getValue('evento').replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ_-]/g, '_') || 'Evento';
+
+    const opt = {
+        margin: 0.35,
+        filename: `Registro_Cultura_Fisica_${eventName}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: '#ffffff',
+            scrollX: 0,
+            scrollY: 0
+        },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(pdfWrapper.firstElementChild).save().then(() => {
+        document.body.removeChild(pdfWrapper);
+    }).catch(() => {
+        document.body.removeChild(pdfWrapper);
+        alert('No se pudo generar el PDF. Intenta nuevamente.');
+    });
+}
+
+function showSection(section) {
+    document.getElementById('welcome-section').classList.toggle('d-none', section !== 'welcome');
+    document.getElementById('form-section').classList.toggle('d-none', section !== 'form');
+    document.getElementById('navInicio').classList.toggle('active', section === 'welcome');
+    document.getElementById('navForm').classList.toggle('active', section === 'form');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('fecha').valueAsDate = new Date();
+
+    document.querySelectorAll('.required-field').forEach(input => {
+        input.addEventListener('input', validateForm);
+        input.addEventListener('change', validateForm);
+    });
+
+    document.querySelectorAll('.women, .men').forEach(input => {
+        input.addEventListener('input', calculateTotals);
+        input.addEventListener('change', calculateTotals);
+    });
+
+    calculateTotals();
+    showSection('welcome');
+});
+</script>
+</body>
+</html>
